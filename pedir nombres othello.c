@@ -26,7 +26,7 @@ char elegircolor(char nombre[]) {
 char Tablero[TAM][TAM];
 
 void imprimirTablero(char Tablero[TAM][TAM]){
-    printf("\n  ");
+    printf("\n   ");//aca agregue tres espacios para alinear columna con filas
     for(int j = 0; j < TAM; j++){
         printf("%2d ", j); //Declaraciòn de columna
     }
@@ -36,7 +36,7 @@ void imprimirTablero(char Tablero[TAM][TAM]){
         printf("%2d", i); //Declaración de fila.
         for(int j = 0; j < TAM; j++){
         //Declaración de fila dentro de columna.
-            printf(" %c ", Tablero[i][j]);
+            printf("%2c ", Tablero[i][j]);// aca agregue el %2 y un solo espacio despues del %2c para que quede bien 
         }
         printf("\n");
     }
@@ -74,3 +74,4 @@ void imprimirTablero(char Tablero[TAM][TAM]){
 
 		return 0;
 	}
+
