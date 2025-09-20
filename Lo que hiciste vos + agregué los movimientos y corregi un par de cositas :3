@@ -1,0 +1,269 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define MAX 30
+#define TAM 8
+
+
+
+void pedirnombre(char nombre[], int numero) {
+	printf ("\nPor favor, ingrese el nombre del jugador %d: ",numero);
+	scanf ("%s", nombre);
+}
+
+
+
+char elegircolor(char nombre[]) {
+	char color;
+	int valido = 0;
+	do {
+		printf("\n%s, Elija el color de su ficha (N para el color Negro, B para el color blanco): ", nombre);
+		scanf(" %c", &color); // El espacio antes de %c ignora espacios y saltos previos
+
+		if (color == 'N' || color == 'n' || color == 'B' || color == 'b') { //acepta los caracteres en mayuscula y miniuscula
+			valido = 1;
+		} else {
+			printf("Error: esa opcion no es valida, por favor ingrese N para negro, B para blanco.\n");
+		}
+	} while (!valido);
+
+	if (color == 'N' || color == 'n') {
+		return 'N';
+	} else {
+		return 'B';
+	}
+} //ahora con este do y while cuando pones algo random salta el invalido y te pide que elijas de nuevo
+
+
+
+
+void imprimirTablero(char Tablero[TAM][TAM]) {
+	printf("\n  "); //aca agre tres espacios para alinear filas y columnas
+	for(int j = 0; j < TAM; j++) {
+		printf("%2d ", j);  //DeclaraciC2n de columna
+	}
+	printf("\n");
+
+	for(int i = 0; i < TAM; i++) {
+		printf("%2d", i); //DeclaraciC3n de fila.
+		for(int j = 0; j < TAM; j++) {
+			printf("%2c ", Tablero[i][j]);//aca faltaba el %2c para que quere alineado
+		}
+		printf("\n");
+	}
+	printf("\n");
+}
+
+
+//FUNCIONES PARA MOVER LAS FICHAS EN TODAS LAS DIRECCIONES POSIBLES:
+
+// Voltear las fichas hacia arriba
+void arriba(char Tablero[TAM][TAM], int f, int c, char color) {
+    int fila = f - 1;
+    char rival = (color == 'N') ? 'B' : 'N';
+    int capturadas = 0;
+    while (fila >= 0 && Tablero[fila][c] == rival) {
+        capturadas++;
+        fila--;
+    }
+    if (fila >= 0 && Tablero[fila][c] == color && capturadas > 0) {
+        for (int i = 1; i <= capturadas; i++)
+            Tablero[f - i][c] = color;
+    }
+}
+
+
+// Voltear las fichas hacia abajo
+void abajo(char Tablero[TAM][TAM], int f, int c, char color) {
+    int fila = f + 1;
+    char rival = (color == 'N') ? 'B' : 'N';
+    int capturadas = 0;
+    while (fila < TAM && Tablero[fila][c] == rival) {
+        capturadas++;
+        fila++;
+    }
+    if (fila < TAM && Tablero[fila][c] == color && capturadas > 0) {
+        for (int i = 1; i <= capturadas; i++)
+            Tablero[f + i][c] = color;
+    }
+}
+
+
+//Voltear las fichas hacia la izq
+void izq(char Tablero[TAM][TAM], int f, int c, char color) {
+     int columna = c - 1;
+     char rival = (color == 'N') ? 'B' : 'N';
+     int capturadas = 0;
+     while (columna >= 0 && Tablero[f][columna] == rival){
+        capturadas++;
+        columna--;
+     }
+    if (columna >= 0 && Tablero[f][columna] == color && capturadas > 0) {
+        for (int i = 1; i <= capturadas; i++)
+            Tablero[f][c - 1] = color;
+    }
+}
+
+
+//Voltear las fichas hacia la der
+void der(char Tablero[TAM][TAM], int f, int c, char color) {
+     int columna = c + 1;
+     char rival = (color == 'N') ? 'B' : 'N';
+     int capturadas = 0;
+     while (columna < TAM && Tablero[f][columna] == rival){
+        capturadas++;
+        columna++;
+     }
+     if (columna < TAM && Tablero[f][columna] == color && capturadas > 0) {
+        for (int i = 1; i <= capturadas; i++)
+        Tablero[f][c + 1] = color;
+     }
+}
+
+
+//Voltear fichas en diagonal arriba para la izq
+void arribaizq(char Tablero[TAM][TAM], int f, int c, char color) {
+    int fila = f - 1, columna = c - 1;
+    char rival = (color == 'N') ? 'B' : 'N';
+    int capturadas = 0;
+    while (fila >= 0 && columna >= 0 && Tablero[fila][columna] == rival) {
+        capturadas++;
+        fila--, columna--;
+    }
+    if (fila >= 0 && columna >=0 && Tablero[fila][columna] == color && capturadas > 0) {
+        for (int i = 1; i <= capturadas; i++)
+            Tablero[f - i][c - i] = color;
+    }
+}
+
+
+//Voltear fichas en diagonal arriba para la der
+void arribader(char Tablero[TAM][TAM], int f, int c, char color) {
+    int fila = f - 1, columna = c + 1;
+    char rival = (color == 'N') ? 'B' : 'N';
+    int capturadas = 0;
+    while (fila >= 0 && columna < TAM && Tablero[fila][columna] == rival) {
+        capturadas++;
+        fila--, columna++;
+    }
+    if (fila >= 0 && columna < TAM && Tablero[fila][columna] == color && capturadas > 0) {
+        for (int i = 1; i <= capturadas; i++)
+            Tablero[f - i][c + i] = color;
+    }
+}
+
+
+//Voltear fichas en diagonal abajo para la izq
+void abajoizq(char Tablero[TAM][TAM], int f, int c, char color) {
+    int fila = f + 1, columna = c - 1;
+    char rival = (color == 'N') ? 'B' : 'N';
+    int capturadas = 0;
+    while (fila < TAM && columna >= 0 && Tablero[fila][columna] == rival) {
+        capturadas++;
+        fila++, columna--;
+    }
+    if (fila < TAM && columna >=0 && Tablero[fila][columna] == color && capturadas > 0) {
+        for (int i = 1; i <= capturadas; i++)
+            Tablero[f + i][c - i] = color;
+    }
+}
+
+//Voltear fichas en diagonal abajo para la der
+void abajoder(char Tablero[TAM][TAM], int f, int c, char color) {
+    int fila = f + 1, columna = c + 1;
+    char rival = (color == 'N') ? 'B' : 'N';
+    int capturadas = 0;
+    while (fila < TAM && columna < TAM && Tablero[fila][columna] == rival) {
+        capturadas++;
+        fila++, columna++;                                                
+    }
+    if (fila < TAM && columna < TAM && Tablero[fila][columna] == color && capturadas > 0) {
+        for (int i = 1; i <= capturadas; i++)
+            Tablero[f + i][c + i] = color;
+    }
+}
+
+//Fijate que solo es modificar si se suma o resta uno en fila y/o columna, es bastante repetitivo y tiene sentido, lo unico que cambia es que cuando suma tiene que ser menor a TAM y cuando resta >= a 0
+
+
+
+void jugadajugador(char Tablero[TAM][TAM], char color) {
+    int f, c;
+
+    do{
+        printf("Ingrese fila y columna: ");
+        scanf("%d %d", &f, &c);
+    }while(f < 0 || f >= TAM || c < 0 || c >= TAM || Tablero[f][c] != '.');  //Esto permite que cargues las coordenadas para hacer el movmiento
+ // SI O SI HACERLO CON ESPACIO ENTRE FILA Y COLUMNA SINO NO LO TOMA COMO BIEN, debo ver como corregirlo
+
+    Tablero[f][c] = color;
+
+    arriba(Tablero, f, c, color);
+    abajo(Tablero, f, c, color);
+    izq(Tablero, f, c, color);;
+    der(Tablero, f, c, color);                //Las declaré dentro de la jugadajugador para este "conectado" a lo de ingrese fila y columna
+    arribaizq(Tablero, f, c, color);
+    arribader(Tablero, f, c, color);
+    abajoizq(Tablero, f, c, color);
+    abajoder(Tablero, f, c, color);
+}
+
+
+
+char sortearColor() {
+    return (rand() % 2 == 0) ? 'N' : 'B';
+}
+
+
+
+
+int main() {
+	char jugador1[MAX], jugador2[MAX];
+	char color1, color2;
+	char colorQueEmpieza; // CORRECCIÓN: Nueva variable para el color que comienza
+	printf("Bienvenido al Othello!\n");
+
+	pedirnombre(jugador1, 1);
+	pedirnombre(jugador2, 2);
+
+// Primero se elige el color de cada jugador
+    color1 = elegircolor(jugador1);
+    color2 = (color1 == 'N') ? 'B' : 'N';
+
+	printf("\nColores asignados :\n");
+	printf("Jugador 1: %s (%c)\n", jugador1, color1);
+	printf("Jugador 2: %s (%c)\n", jugador2, color2);
+
+	 srand(time(NULL));
+    // Ahora se sortea el color que comienza, no el jugador
+    colorQueEmpieza = sortearColor();
+
+    printf("\n¡Sorteo Listo! El color que comienza es: %c\n", colorQueEmpieza);
+   // Se determina qué jugador tiene ese color y comienza
+    if (colorQueEmpieza == color1) {
+        printf("Empieza %s\n", jugador1);
+    } else {
+        printf("Empieza %s\n", jugador2);
+    }
+
+	char Tablero[TAM][TAM];
+	for (int i = 0; i < TAM; i++) {
+		for (int j = 0; j < TAM; j++) {
+			Tablero[i][j] = '.';
+		}
+	}
+
+        Tablero[3][3] = 'B';
+        Tablero[3][4] = 'N';
+        Tablero[4][3] = 'B';
+        Tablero[4][4] = 'N';
+
+	imprimirTablero(Tablero);
+
+    jugadajugador(Tablero, colorQueEmpieza);
+
+    imprimirTablero(Tablero);
+
+	return 0;
+}
