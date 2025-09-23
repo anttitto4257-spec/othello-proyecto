@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -475,4 +476,5 @@ int main() {
     getchar(); // consume salto de línea pendiente
     getchar(); // espera enter
     return 0;
+
 }
