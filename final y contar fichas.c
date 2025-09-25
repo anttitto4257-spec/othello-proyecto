@@ -233,8 +233,11 @@ int puede_capturar(char Tablero[TAM][TAM], int f, int c, char color) {
 
 
 // Una jugada es válida si captura al menos una ficha
-bool jugadavalida(char Tablero[TAM][TAM], int f, int c, char color) {
-    return puede_capturar(Tablero, f, c, color) > 0;
+bool jugadavalida(char Tablero[TAM][TAM], int f, int c, char color) { //dentro estan los parametros de fila columna color
+//la funcion bool devuelve un valor logico true o false true (la condición se cumple).
+//falso (la condición no se cumple).
+    return puede_capturar(Tablero, f, c, color) > 0; //llama a la funcion puede_capturar
+	//cuenta las fichas que se deberian dar vuelta si es mas a 1 lo toma como valida si no como movimiento invalido
 }
 
 int contar_fichas_capturadas(char Tablero[TAM][TAM], int f, int c, char color) {
@@ -248,8 +251,8 @@ int contar_fichas_capturadas(char Tablero[TAM][TAM], int f, int c, char color) {
     total += abajoizq(Tablero, f, c, color);
     total += abajoder(Tablero, f, c, color);
     return total;
-}
-
+} //esta funcion int contar fichas devuelve un numero entero que representa cuantas fichas del rival de deberian dar vuelta al colocarlas en la posicion (f,c)
+//Cada línea suma lo que capturás en una dirección del tablero y se inicia en 0
 
 //Función para que juegue el jugador.
 void jugadajugador(char Tablero[TAM][TAM], char color) {
@@ -478,3 +481,4 @@ int main() {
     return 0;
 
 }
+
