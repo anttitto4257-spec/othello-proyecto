@@ -1,25 +1,25 @@
-
-#include <stdio.h>
+//Librerias para usar las distintas funciones
+#include <stdio.h> 
 #include <stdlib.h>
 #include <time.h>
 #include <stdbool.h>
 
-#define MAX 30
+#define MAX 30 //
 #define TAM 8 //Declaración de macro para el tamaño de la matriz 8x8.
 
 //Función para pedir el nombre al o a los jugadores.
 void pedirnombre(char nombre[], int numero) {
 	printf ("\nPor favor, ingrese el nombre del jugador %d: ",numero);
-	scanf ("%s", nombre);
+	scanf ("%s", nombre); //Guardamos el nombre del jugador en la variable nombre
 }
 
 //Función para elegir el color.
 char elegircolor(char nombre[]) {
-	char color;
-	int valido = 0;
+	char color; //variable para guardar los colores
+	int valido = 0; //inicializamos la variable color
 
 	do {
-		printf("\n%s, Elija el color de su ficha (N para el color Negro, B para el color blanco): ", nombre);
+		printf("\n%s, Elija el color de su ficha (N para el color Negro, B para el color blanco): ", nombre); //jugador elije color
 		scanf(" %c", &color); // El espacio antes de %c ignora espacios y saltos previos
 
 		if (color == 'N' || color == 'n' || color == 'B' || color == 'b') { //Acepta los caracteres en mayúscula y minúscula.
@@ -30,7 +30,7 @@ char elegircolor(char nombre[]) {
 
 	} while (!valido);
 
-	if (color == 'N' || color == 'n') {
+	if (color == 'N' || color == 'n') { 
 		return 'N';
 	} else {
 		return 'B';
@@ -46,7 +46,7 @@ void imprimirTablero(char Tablero[TAM][TAM]) {
 	for(int j = 0; j < TAM; j++) {
 		printf("%2d ", j);  //Declaración de columnas.
 	}
-	printf("\n");
+	printf("\n"); //espacio 
 
 	for(int i = 0; i < TAM; i++) {
 		printf("%2d", i); //Declaración de filas.
@@ -64,16 +64,16 @@ void imprimirTablero(char Tablero[TAM][TAM]) {
 // Voltear las fichas hacia arriba
 int arriba(char Tablero[TAM][TAM], int f, int c, char color) {
     int fila = f - 1; //Al restar uno se acerca al 0. Declaramos una nueva variable fila para no modificar la original.
-    char rival = (color == 'N') ? 'B' : 'N';
-    int capturadas = 0;
-    while (fila >= 0 && Tablero[fila][c] == rival) {
-        capturadas++;
-        fila--;
+    char rival = (color == 'N') ? 'B' : 'N'; //El signo de pregunta funciona como un if
+    int capturadas = 0; //Inicializamos la variable capturadas
+    while (fila >= 0 && Tablero[fila][c] == rival) { //fila debe ser mayor ó = a 0 para poder moverse dentro de la matriz que comienza en 0
+        capturadas++;  
+        fila--; //Resta ya que se acerca al 0
     }
-    if (fila >= 0 && Tablero[fila][c] == color && capturadas > 0) {
+    if (fila >= 0 && Tablero[fila][c] == color && capturadas > 0) { //si arriba hay una del mismo color captura
         for (int i = 1; i <= capturadas; i++)
             Tablero[f - i][c] = color;
-            return capturadas;
+            return capturadas; //devuelve las fichas capturadas 
     }
     return 0;
 }
@@ -207,25 +207,25 @@ int abajoder(char Tablero[TAM][TAM], int f, int c, char color) {
 
 
 //Para capturar fichas.
-int puede_capturar(char Tablero[TAM][TAM], int f, int c, char color) {
-    if (Tablero[f][c] != '.') return 0;
+int puede_capturar(char Tablero[TAM][TAM], int f, int c, char color) { //función para permitir capturar fichas
+    if (Tablero[f][c] != '.') return 0; //Si no hay un punto no permite capturar 
 
     char rival = (color == 'N') ? 'B' : 'N';
-    int total = 0;
+    int total = 0; //inicializamos la variable total
 
     // Para cada dirección [df (dirección-fila), dc (dirección-columna)]
 
-    int dirs[8][2] = {{-1,0},{1,0},{0,-1},{0,1},{-1,-1},{-1,1},{1,-1},{1,1}};
-    for (int d = 0; d < 8; d++) {
-        int df = dirs[d][0], dc = dirs[d][1];
-        int ff = f + df, cc = c + dc;
+    int dirs[8][2] = {{-1,0},{1,0},{0,-1},{0,1},{-1,-1},{-1,1},{1,-1},{1,1}}; //Todas las direcciones posibles
+    for (int d = 0; d < 8; d++) { //Inicializamos la variable d (direccion)
+        int df = dirs[d][0], dc = dirs[d][1]; //Direccion de fila y columna
+        int ff = f + df, cc = c + dc; 
         int count = 0;
-        while (ff >= 0 && ff < TAM && cc >= 0 && cc < TAM && Tablero[ff][cc] == rival) {
-            count++;
-            ff += df;
-            cc += dc;
+        while (ff >=  0 && ff < TAM && cc >= 0 && cc < TAM && Tablero[ff][cc] == rival) { //Cuenta fichas del rival 
+            count++; 
+            ff += df; //Suma o deja igual según la dirección de la fila
+            cc += dc; //Suma o deja igual según la dirección de la columna
         }
-        if (count > 0 && ff >= 0 && ff < TAM && cc >= 0 && cc < TAM && Tablero[ff][cc] == color)
+        if (count > 0 && ff >= 0 && ff < TAM && cc >= 0 && cc < TAM && Tablero[ff][cc] == color) //Si aparece una del propio color,las fichas del rival están encerradas y las voltea
             total += count;
     }
     return total;
@@ -481,4 +481,5 @@ int main() {
     return 0;
 
 }
+
 
