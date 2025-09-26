@@ -260,13 +260,13 @@ void jugadajugador(char Tablero[TAM][TAM], char color) {
 
     do{
         printf("Ingrese fila y columna: ");
-        scanf("%d %d", &f, &c);
+        scanf("%d %d", &f, &c); //entrada de datos,deciden donde poner fichas 
         if (!jugadavalida(Tablero, f, c, color)){
             printf("Jugada invalida, debes capturar por lo menos una ficha para continuar.\n");
-        }
+        } //este if corrobora que la jugada es valida al capturar como menos unna  ficha y lo repite hasta que el jugador escriba una jugada valida
     }while(!jugadavalida(Tablero, f, c, color));
 
-    Tablero[f][c] = color;
+    Tablero[f][c] = color; //pone la ficha del jugador en la cordenada valida
 
     // --- Aquí llamamos a contar_fichas_capturadas para ver cuántas fichas se capturaron ---
     capturadas += arriba(Tablero, f, c, color);
@@ -277,21 +277,20 @@ void jugadajugador(char Tablero[TAM][TAM], char color) {
     capturadas += arribader(Tablero, f, c, color);
     capturadas += abajoizq(Tablero, f, c, color);
     capturadas += abajoder(Tablero, f, c, color);
-
+//funcion que revisa en todas las direcciones las fichas atrapadas del rival 
     if(capturadas > 0){
         printf("¡Capturaste %d fichas en esta jugada!\n", capturadas);
     } else {
         printf("La próxima será maestro, no capturaste ninguna ficha en esta jugada.\n");
-    }
-}
+    } //mensaje para los jugadores , le avisa cuantas fichas capturo,solo sale cuando capturo +1 , ya que filtramos los movimientos invalidos
+} //conclusion de esta funcion La función pide una jugada, verifica si es válida, coloca la ficha, da vuelta las del rival y muestra cuántas se capturaron.
 
-// Función para que el sistema juegue de mejor manera, no juega al azar.
-// --- Cambios en jugadasistema ---
-// Igual que arriba, solo mostrá el mensaje después de la jugada.
+
+// Igual que arriba, solo muestra el mensaje después de la jugada.
 // Lo hacemos solo si el sistema puede jugar (maxCaptura > 0).
 void jugadasistema(char Tablero[TAM][TAM], char color) {
-    int mejorF = -1, mejorC = -1, maxCaptura = 0;
-    for (int f = 0; f < TAM; f++) {
+    int mejorF = -1, mejorC = -1, maxCaptura = 0;//guarda la fila y colunma de la mejor jugada encontrada y la cantidad maxima de fichas capturadas
+    for (int f = 0; f < TAM; f++) { //busca la mejor opcion de jugada , recorriendo todas las casillas del tablero y vacias por supuesto
         for (int c = 0; c < TAM; c++) {
             int captura = puede_capturar(Tablero, f, c, color);
             if (Tablero[f][c] == '.' && captura > maxCaptura) {
@@ -303,9 +302,9 @@ void jugadasistema(char Tablero[TAM][TAM], char color) {
     }
     if (maxCaptura > 0) {
         printf("El sistema juega en la posicion: %d %d\n", mejorF, mejorC);
-        Tablero[mejorF][mejorC] = color;
+        Tablero[mejorF][mejorC] = color; //cuando encuentra la mejor jugada valida pone la ficha en las cordenadas elejidas 
 
-        int capturadas = 0;
+        int capturadas = 0;//va en toda las direcciones volteando las fichas de la jugada y al final las cuenta
         capturadas += arriba(Tablero, mejorF, mejorC, color);
         capturadas += abajo(Tablero, mejorF, mejorC, color);
         capturadas += izq(Tablero, mejorF, mejorC, color);
@@ -318,20 +317,20 @@ void jugadasistema(char Tablero[TAM][TAM], char color) {
         if(capturadas > 0){
             printf("El sistema capturó %d fichas en esta jugada.\n", capturadas);
         } else {
-            printf("El sistema no capturó ninguna ficha en esta jugada.\n");
+            printf("El sistema no capturó ninguna ficha en esta jugada.\n"); //muestra los resultados de capturar +1 ya que esta validada la jugada y filtrado los movimientos invalidos 
         }
     } else {
         printf("El sistema no tiene jugadas validas.\n");
-    }
-}
+    }//si no encuentra ninguna jugada valida muestra este mensaje por pantalla 
+} //conclusion de esta funcion : busca la mejor jugada,coloca la ficha y cuenta cuantas capturo
 
 //Función para sortear el color que comienza en la partida.
 char sortearColor() {
-    return (rand() % 2 == 0) ? 'N' : 'B';
+    return (rand() % 2 == 0) ? 'N' : 'B'; //numero al azar entre 0 y 1 , 0=n 1=b 
 }
 
 //Función para declarar si una jugada es válida.
-int tiene_jugada_valida(char Tablero[TAM][TAM], char color) {
+int tiene_jugada_valida(char Tablero[TAM][TAM], char color) { //recorre todo el tablero 
 	for (int i = 0; i < TAM; i++) {
 		for (int j = 0; j < TAM; j++) {
 			if (Tablero[i][j] == '.' && jugadavalida(Tablero, i, j, color)) {
@@ -340,7 +339,7 @@ int tiene_jugada_valida(char Tablero[TAM][TAM], char color) {
 		}
 	}
 	return 0; // Falso
-}
+}//esta funcion implemeta la regla de pasar turno,si un jugador no tiene movimientos validos tiene que pasar el turno , y si ninguno tiene fichas validas la partida termina 
 
 
 int main() {
@@ -351,8 +350,8 @@ int main() {
     char colorSistema = '\0';
 
     int mododejuego = 1; // 1 = Contra persona, 2 = Contra sistema
-    int seguir_jugando = 1;
-
+    int seguir_jugando = 1;//permite otra partida sin cerra el programa 
+//Variables que se usan durante eljuego 
 	printf("Bienvenido al Othello!\n");
 
 	printf("\nSeleccione modo de juego:\n");
@@ -362,7 +361,7 @@ int main() {
 	scanf("%d", &mododejuego);
 
 	pedirnombre(jugador1, 1);
-
+//seleccion de los modos de juego 
     if (mododejuego == 1) {
         pedirnombre(jugador2, 2);
     } else {
@@ -377,7 +376,7 @@ int main() {
 
 
 
-    // Primero se elige el color de cada jugador
+    // eleccion de los colores,Primero se elige el color de cada jugador
     color1 = elegircolor(jugador1);
     color2 = (color1 == 'N') ? 'B' : 'N';
 
@@ -393,7 +392,7 @@ int main() {
 	 srand(time(NULL));
 
     do {
-        //INICIO DE LA PARTIDA
+        //INICIO DE LA PARTIDA,tablero vacio y las 4 fichas aleatorias en el centro 
         char Tablero[TAM][TAM];
         for (int i = 0; i < TAM; i++)
             for (int j = 0; j < TAM; j++)
@@ -404,7 +403,7 @@ int main() {
         Tablero[4][3] = 'B';
         Tablero[4][4] = 'N';
 
-        colorQueEmpieza = sortearColor();
+        colorQueEmpieza = sortearColor();//sorteo del color que empieza la partida 
 
 
     printf("\n¡Sorteo Listo!\nEl color que comienza es: %c\n", colorQueEmpieza);
@@ -418,7 +417,7 @@ int main() {
 
 	imprimirTablero(Tablero);
 
-    char turno = colorQueEmpieza;  //Turnos.
+    char turno = colorQueEmpieza;  //bucle principal de turnos ,revisa si hay juagada valida , se termina la partida si se saltan los turnos dos veces o si el tablero esta lleno 
     int sin_jugadas_consecutivas = 0;
         while (1) {
             printf("\nTurno de color %c\n", turno);
@@ -449,7 +448,7 @@ int main() {
                 break;
             }
         }
-
+//Cuenta cuántas fichas de cada color quedaron,anuncia el ganador o si hubo empate.
     int cuentaN = 0, cuentaB = 0;
        for (int i = 0; i < TAM; i++)
             for (int j = 0; j < TAM; j++) {
@@ -468,7 +467,7 @@ int main() {
         else
             printf("¡Empate!\n");
         //FIN DE LA PARTIDA
-
+//repeticion de la partida sin cerra el programa ni que se vuelvan a pedir los nombres de los jugadores 
         printf("\n¿Quieres jugar otra vez? (1=Si, 0=No): ");
         scanf("%d", &seguir_jugando);
 
@@ -481,5 +480,10 @@ int main() {
     return 0;
 
 }
+//Soporta dos modos de juego.
+//Tiene sorteo de inicio.
+//Implementa la regla de pasar turno.
+//Permite repetir partidas.
+//Cuenta fichas y declara el ganador.
 
 
